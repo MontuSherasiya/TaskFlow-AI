@@ -32,7 +32,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Password is required'],
         minlength: [6, 'Password must be at least 6 characters long'],
-        maxlength: [15, 'Password cannot exceed 15 characters'],
         select: false, // Exclude password from query results by default
     },
     avatar: {
