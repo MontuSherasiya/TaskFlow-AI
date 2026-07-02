@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import bcrypt from 'bcrypt';
 import generateToken from '../utils/generateToken.js';
 
+// register user
 const registerUser = async (userData) => {
     const {fullname, username, email, password} = userData;
 
@@ -47,4 +48,39 @@ const registerUser = async (userData) => {
     }
 }
 
-export default registerUser;
+//login user
+const loginUser = async (userData) => {
+    const {email, password} = userData;
+
+    //check user exists
+    const user = await User.findOne({email}).select('+password');
+
+    if(!user){
+        throw new Error('Invalid email or password');
+    }
+
+    //check password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if(!isMatch){
+        throw new Error('Invalid email or password');
+    }
+
+    //generate token
+    const token = generateToken(user._id);
+
+    return{
+        success: true,
+        message: 'User logged in successfully',
+        token,
+        user:{
+            id: user._id,
+            fullname: user.fullname,
+            username: user.username,
+            email: user.email,
+            role: user.role
+        }
+    }
+}
+
+export {registerUser, loginUser};
