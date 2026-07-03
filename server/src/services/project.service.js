@@ -13,4 +13,14 @@ const createProject = async (projectData, ownerId) => {
     };
 };
 
-export {createProject};
+const getProjects = async (ownerId) => {
+    const projects = await Project.find({ owner: ownerId }).sort({ createdAt: -1 });
+
+    return{
+        success: true,
+        count: projects.length,
+        projects,
+    }
+}
+
+export { createProject, getProjects };
