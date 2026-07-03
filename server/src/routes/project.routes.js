@@ -1,9 +1,12 @@
 import express from "express";
-import {create, getAll} from "../controllers/project.controller.js";
+import {create, getAll, getById, update, remove} from "../controllers/project.controller.js";
 import {protect} from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
 router.post('/', protect, create);
 router.get('/', protect, getAll);
+router.get('/:id', protect, getById);
+router.put('/:id', protect, update);
+router.delete('/:id', protect, remove);
 export default router;
