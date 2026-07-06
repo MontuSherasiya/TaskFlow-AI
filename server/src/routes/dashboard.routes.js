@@ -1,10 +1,12 @@
 import express from 'express';
-import { summary, recentTasks } from '../controllers/dashboard.controller.js';
+import { summary, recentTasks, taskStatus, projectProgress } from '../controllers/dashboard.controller.js';
 import {protect } from '../middleware/auth.middleware.js'
 
 const router = express.Router();
 
 router.get('/', protect, summary);
 router.get("/recent-tasks", protect, recentTasks)
+router.get("/task-status", protect, taskStatus)
+router.get("/project-progress", protect, projectProgress)
 
 export default router;

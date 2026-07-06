@@ -59,4 +59,73 @@ const getRecentTasks = async (userId) => {
     }
 }
 
-export {getDashboardSummary, getRecentTasks}
+const getTaskStatusAnalytics = async (userId) => {
+    const todo = await Task.countDocuments({
+        createdBy: userId,
+        status: 'Todo',
+    });
+
+    const inProgress = await Task.countDocuments({
+        createdBy: userId,
+        status: 'In Progress',
+    });
+
+    const review = await Task.countDocuments({
+        createdBy: userId,
+        status: 'Review',
+    });
+
+    const done = await Task.countDocuments({
+        createdBy: userId,
+        status: 'Done'
+    });
+
+    return{
+        success: true,
+        analytics: {
+            todo,
+            inProgress,
+            review,
+            done,
+        },
+    };
+}
+
+const getProjectProgress = async(userId) => {
+    const projects = await Project.find({
+        owner: userId,
+    });
+
+    const progress = [];
+
+    for(const project of projects) {
+        const totalTasks = await Task.countDocuments({
+            project: project._id,
+        });
+
+        const completedTasks = await Task.countDocuments({
+            project: project._id,
+            status: 'Done'
+        });
+
+        const completion = 
+            totalTasks === 0
+                ? 0
+                : Math.round((completedTasks/ totalTasks) * 100);
+        
+        progress.push({
+            projectId: project._id,
+            projectName: project.name,
+            totalTasks,
+            completedTasks,
+            completion
+        });
+    };
+
+    return{
+        success: true,
+        progress,
+    }
+}
+
+export {getDashboardSummary, getRecentTasks, getTaskStatusAnalytics, getProjectProgress}
